@@ -10,8 +10,6 @@ def erase_token(token, schuettelbox):
     retr_string = ' (' + str(len(schuettelbox)+1) + ')' + '_' * (len(token)*2 +1) 
     return (retr_string, token)
 
-def enumerate_blanks():
-    pass
 
 def detokenizer(line: List[str]) -> str:
     return "".join(' ' + token if token.isalpha() else token for token in line)[1:]
@@ -36,25 +34,23 @@ file = 'sample_texts/text1.txt'
 n = 10
 
 
-def remove_nth_word(file, n):
+def remove_nth_word(line, n):
     return_line = []
     schuettelbox = []
-    with open('sample_texts/text1.txt', 'r', encoding='utf-8') as file:
-        token_ctr = 0
-        for line in file:
-            for token in nlp(line):
-                token_ctr += 1
-                if token_ctr == n:
-                    token_ctr = 0
-                    blank = erase_token(token.text, schuettelbox)
-                    return_line.append(blank[0])
-                    schuettelbox.append(blank[1])
-                else:
-                    return_line.append(token.text)
+    token_ctr = 0
+    for token in nlp(line):
+        token_ctr += 1
+        if token_ctr >= n and token.is_alpha:
+            token_ctr = 0
+            blank = erase_token(token.text, schuettelbox)
+            return_line.append(blank[0])
+            schuettelbox.append(blank[1])
+        else:
+            return_line.append(token.text)
     return detokenizer(return_line), schuettelbox
 
 
-def remove_adjective_suffix(token):
+def remove_adjective_suffix_from_token(token):
     return re.sub(r'(es|er|em|en|e)$', '____', token)
 
 
