@@ -34,3 +34,8 @@ class ClozyTest(TestCase):
         text = 'Ich will. Nach Hause.'
         result = clozy.remove_nth_word(text, 3)[0]
         self.assertEqual('Ich will. (1)_________ Hause.', result, 'If word is a punctuation mark or a number it should be skipped.')
+    
+    def test_get_positions_of_pos(self):
+        text = clozy.nlp('Auf einem Baum saß ein alter Hahn.')
+        result = clozy.get_positions_of_pos(text, ['NOUN'])
+        self.assertEqual([2, 6], result)

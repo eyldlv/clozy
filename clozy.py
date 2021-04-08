@@ -11,6 +11,9 @@ def erase_token(token, schuettelbox):
     return (retr_string, token)
 
 
+def get_positions_of_pos(doc, tags):
+    return [i for i in range(len(doc)) if doc[i].pos_ in tags]
+
 def detokenizer(line: List[str]) -> str:
     return "".join(' ' + token if token.isalpha() else token for token in line)[1:]
 
