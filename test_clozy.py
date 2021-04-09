@@ -39,3 +39,15 @@ class ClozyTest(TestCase):
         text = clozy.nlp('Auf einem Baum saß ein alter Hahn.')
         result = clozy.get_positions_of_pos(text, ['NOUN'])
         self.assertEqual([2, 6], result)
+
+    
+    def test_pos_new(self):
+        text = clozy.nlp('Auf einem Baum saß ein alter Hahn.')
+        result = clozy.remove_pos_new(text)
+        self.assertEqual(('Auf einem (1)_________ saß ein alter (2)_________.', ['Baum', 'Hahn']), result)
+        
+        # Check that only half of the words gets deleted
+        text = clozy.nlp('Die Katze sitzt auf dem Tisch.')
+        result = clozy.remove_pos_new(text, ['NOUN'], 0.5)[0]
+        possible_results = ['Die (1)___________ sitzt auf dem Tisch.', 'Die Katze sitzt auf dem (1)___________.']
+        self.assertTrue(result in possible_results)
