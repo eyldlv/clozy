@@ -9,22 +9,29 @@ class ClozyTest(TestCase):
         result = clozy.erase_token(token, [])
         self.assertEqual( (' (1)_________'), result, "erase_token doesn't work properly")
 
-    def test_remove_adjective_suffix(self):
+
+    def test_remove_adja_suffix(self):
         token = 'schöner'
-        result = clozy.remove_adjective_suffix_from_token(token)
-        self.assertEqual('schön____', result, 'adjective suffix doesnt work')
-        token = 'schönes'
-        result = clozy.remove_adjective_suffix_from_token(token)
-        self.assertEqual('schön____', result, 'adjective suffix doesnt work')
-        token = 'schönem'
-        result = clozy.remove_adjective_suffix_from_token(token)
-        self.assertEqual('schön____', result, 'adjective suffix doesnt work')
-        token = 'schönen'
-        result = clozy.remove_adjective_suffix_from_token(token)
-        self.assertEqual('schön____', result, 'adjective suffix doesnt work')
+        result = clozy.remove_adja_suffix(token, [])
+        self.assertEqual(' (1) schön____', result)
         token = 'schöne'
-        result = clozy.remove_adjective_suffix_from_token(token)
-        self.assertEqual('schön____', result, 'adjective suffix doesnt work')
+        result = clozy.remove_adja_suffix(token, [])
+        self.assertEqual(' (1) schön____', result)
+        token = 'schönes'
+        result = clozy.remove_adja_suffix(token, [])
+        self.assertEqual(' (1) schön____', result)
+        token = 'schönem'
+        result = clozy.remove_adja_suffix(token, [])
+        self.assertEqual(' (1) schön____', result)
+        token = 'schönen'
+        result = clozy.remove_adja_suffix(token, [])
+        self.assertEqual(' (1) schön____', result)
+    
+    def test_add_blank_to_adjd(self):
+        token = 'schön'
+        result = clozy.add_blank_to_adjd(token, [])
+        self.assertEqual(' (1) schön____', result)
+
 
     def test_nth_word(self):
         text = clozy.nlp('Auf einem Baum saß ein alter Hahn.')
