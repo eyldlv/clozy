@@ -113,7 +113,7 @@ blank_text = []
 with open('sample_texts/junk.txt', 'r') as f:
     for line in f:
         text = nlp(line)
-        a = remove_pos_new(text, schuettelbox, ['ADP'], 0.5)
+        a = remove_pos_new(text, schuettelbox, ['ADP'])
         blank_text += [a[0]]
 
 
