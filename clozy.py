@@ -94,7 +94,7 @@ tags = ['NOUN']
 schuettelbox = []
 blank_text = []
 
-with open('sample_texts/junk.txt', 'r') as f:
+with open('sample_texts/text3.txt', 'r') as f:
     for line in f:
         text = nlp(line)
         a = remove_nth_word(text, schuettelbox, 15)
@@ -110,15 +110,15 @@ print_schuettelbox(schuettelbox)
 schuettelbox = []
 blank_text = []
 
-with open('sample_texts/junk.txt', 'r') as f:
+with open('sample_texts/text3.txt', 'r') as f:
     for line in f:
         text = nlp(line)
-        a = remove_pos_new(text, schuettelbox, ['ADP'])
+        a = remove_pos_new(text, schuettelbox, ['ADP'], 0.5)
         blank_text += [a[0]]
 
 
 for paragraph in blank_text:
-    print(paragraph)
+    print(paragraph, end='')
 print_schuettelbox(schuettelbox)
 
 
@@ -134,7 +134,7 @@ with open ('sample_texts/junk.txt', 'r') as f:
         # schuettelbox += schuettel
 
 for paragraph in blank_text:
-    print(paragraph)
+    print(paragraph, end='')
 print_schuettelbox(schuettelbox)
 # check(text)
 
