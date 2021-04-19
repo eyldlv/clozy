@@ -3,7 +3,7 @@ import re
 from typing import Tuple, List
 from random import randint
 
-nlp = spacy.load('de_core_news_sm')
+
 
 
 
@@ -17,7 +17,7 @@ def get_positions_of_pos(doc, tags):
 
 
 def detokenizer(line: List[str]) -> str:
-    return "".join(' ' + token if token.isalpha() else token for token in line)[1:]
+    return "".join(' ' + token if token.isalnum() else token for token in line)[1:]
 
 
 def remove_adja_suffix(token, schuettelbox):
@@ -32,7 +32,7 @@ file = 'sample_texts/text1.txt'
 n = 10
 
 
-def remove_nth_word(text:List[spacy.tokens.Token], schuettelbox:List[str], n:int=10):
+def nth_word_remover(text:List[spacy.tokens.Token], schuettelbox:List[str], n:int=10) -> Tuple[str, List[str]]:
     return_string = []
     token_ctr = 0
     for token in text:
@@ -46,7 +46,7 @@ def remove_nth_word(text:List[spacy.tokens.Token], schuettelbox:List[str], n:int
     return detokenizer(return_string), schuettelbox
 
 
-def remove_pos_new(text:List[spacy.tokens.Token], schuettelbox:List[str], tags:List[str]=['NOUN'], percentage:int=1) -> Tuple[str, List[str]]:
+def pos_remover(text:List[spacy.tokens.Token], schuettelbox:List[str], tags:List[str]=['NOUN'], percentage:int=1) -> Tuple[str, List[str]]:
     """
     Turn a certain pos tag in the text to blanks. Nouns by default. All words of the same pos will be removed unless a diffrent percentage is given.
 
@@ -63,7 +63,8 @@ def remove_pos_new(text:List[spacy.tokens.Token], schuettelbox:List[str], tags:L
             return_string.append(token.text)
     return detokenizer(return_string), schuettelbox
 
-def remove_adjective_suffixes(text, schuettelbox):
+
+def adjective_suffix_remover(text, schuettelbox):
     return_string = []
     for token in text:
         if token.tag_ == 'ADJD':
@@ -77,65 +78,70 @@ def remove_adjective_suffixes(text, schuettelbox):
     return detokenizer(return_string), schuettelbox
 
 
-def print_schuettelbox(schuettelbox):
-    print('Lösung:')
-    print('---------------')
-    for position, word in enumerate(schuettelbox,1):
-        print(f'({position}) {word}')
+def print_schuettelbox(schuettelbox) -> str:
+    return_str = 'Losung:\n----------------\n'
+    return_str += ''.join(f'({position}) {word}\n' for position, word in enumerate(schuettelbox,1))
+    return return_str
 
 
 def check(text):
     for token in text:
         print(token.text, token.pos_, sep='\t')
 
-tags = ['NOUN']
+def main():
+    nlp = spacy.load('de_core_news_sm')
+
+    tags = ['NOUN']
 
 
-schuettelbox = []
-blank_text = []
-
-with open('sample_texts/text3.txt', 'r') as f:
-    for line in f:
-        text = nlp(line)
-        a = remove_nth_word(text, schuettelbox, 15)
-        blank_text += [a[0]]
-
-
-for paragraph in blank_text:
-    print(paragraph)
-print_schuettelbox(schuettelbox)
-
-
-
-schuettelbox = []
-blank_text = []
-
-with open('sample_texts/text3.txt', 'r') as f:
-    for line in f:
-        text = nlp(line)
-        a = remove_pos_new(text, schuettelbox, ['ADP'], 0.5)
-        blank_text += [a[0]]
-
-
-for paragraph in blank_text:
-    print(paragraph, end='')
-print_schuettelbox(schuettelbox)
-
-
-
-with open ('sample_texts/junk.txt', 'r') as f:
     schuettelbox = []
     blank_text = []
-    for line in f:
-        text = nlp(line)
-        blank, schuettel = remove_adjective_suffixes(text, schuettelbox)
-        # print(schuettel)
-        blank_text += [blank]
-        # schuettelbox += schuettel
 
-for paragraph in blank_text:
-    print(paragraph, end='')
-print_schuettelbox(schuettelbox)
-# check(text)
+    with open('sample_texts/text3.txt', 'r') as f:
+        for line in f:
+            text = nlp(line)
+            a = remove_nth_word(text, schuettelbox, 15)
+            blank_text += [a[0]]
 
-# NOUN, VERB, AUX, ADJ, ADV (noch, jedoch, schon, selten), ADP (präpositionen), DET, SCONJ (dass), CCONJ (und, aber)
+
+    for paragraph in blank_text:
+        print(paragraph)
+    print_schuettelbox(schuettelbox)
+
+
+
+    schuettelbox = []
+    blank_text = []
+
+    with open('sample_texts/text3.txt', 'r') as f:
+        for line in f:
+            text = nlp(line)
+            a = remove_pos_new(text, schuettelbox, ['ADP'], 0.5)
+            blank_text += [a[0]]
+
+
+    for paragraph in blank_text:
+        print(paragraph, end='')
+    print_schuettelbox(schuettelbox)
+
+
+
+    with open ('sample_texts/junk.txt', 'r') as f:
+        schuettelbox = []
+        blank_text = []
+        for line in f:
+            text = nlp(line)
+            blank, schuettel = remove_adjective_suffixes(text, schuettelbox)
+            # print(schuettel)
+            blank_text += [blank]
+            # schuettelbox += schuettel
+
+    for paragraph in blank_text:
+        print(paragraph, end='')
+    print_schuettelbox(schuettelbox)
+    # check(text)
+
+    # NOUN, VERB, AUX, ADJ, ADV (noch, jedoch, schon, selten), ADP (präpositionen), DET, SCONJ (dass), CCONJ (und, aber)
+
+if __name__ == '__main__':
+    main()
