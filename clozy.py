@@ -84,9 +84,17 @@ def print_schuettelbox(schuettelbox) -> str:
     return return_str
 
 
-def check(text):
+def get_postags(text):
+    postags_dict = {}
     for token in text:
-        print(token.text, token.pos_, sep='\t')
+        if token.pos_ != 'PUNCT':
+            if token.pos_ in postags_dict:
+                if len(postags_dict[token.pos_]) < 3 and token.text not in postags_dict[token.pos_]:
+                    postags_dict[token.pos_] += [token.text]
+            elif token.pos_ not in postags_dict:
+                postags_dict[token.pos_] = [token.text] 
+
+    return postags_dict
 
 def main():
     nlp = spacy.load('de_core_news_sm')

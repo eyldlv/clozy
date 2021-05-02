@@ -1,6 +1,5 @@
 import argparse
-from clozy import nth_word_remover, adjective_suffix_remover, pos_remover
-from clozy import print_schuettelbox
+import clozy
 import spacy
 
 
@@ -15,14 +14,14 @@ def get_arguments():
                         help='Remove adjective suffixes.')
     parser.add_argument('--pos', type=str, nargs='*', default=['NOUN'],
                         help='Remove words with pos tag.')
-    parser.add_argument('--pospercent', type=int, 
+    parser.add_argument('--pospercent', type=int, default=100,
                         help='When defined, limit pos-tag removal to x percent.\
                         e.g. --pos ADJ --pospercent 50 will randomly \
                         remove 50% of all adjectives.')
+    parser.add_argument('--poslist', action='store_true', 
+                        help='Print available parts-of-speech in given file.')
     args = parser.parse_args()
     return args
-
-
 
 
 def main():
@@ -33,14 +32,20 @@ def main():
         
         schuettelbox = []
 
-
         for line in file:
             text = nlp(line)
+
             if args.nth:
-                print(nth_word_remover(text, schuettelbox, args.nth)[0], end='')
+                print(clozy.nth_word_remover(text, schuettelbox, args.nth)[0], end='')
                 print('\n')
-                
-    print(print_schuettelbox(schuettelbox))
+            
+            elif args.adj:
+                print(clozy.adjective_suffix_remover(text, schuettelbox)[0], end='')
+            
+            elif args.pos:
+                print(clozy.pos_remover(text, schuettelbox, args.pos, args.pospercent/100)[0], end='')
+
+    print(clozy.print_schuettelbox(schuettelbox))
 
 
 
