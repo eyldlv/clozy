@@ -31,9 +31,9 @@ def get_arguments():
 
 def main():
     args = get_arguments()
-    if sum(1 for arg in (args.pos, args.adj, args.nth) if arg) > 1:
-        print('Too many arguments given. Please choose either --pos, --adj or --nth.')
-        sys.exit()
+    # if sum(1 for arg in (args.pos, args.adj, args.nth) if arg) > 1:
+    #     print('Too many arguments given. Please choose either --pos, --adj or --nth.')
+    #     sys.exit()
 
     nlp = spacy.load('de_core_news_sm')
     
@@ -42,32 +42,32 @@ def main():
 
     for file in args.file:
         
-        schuettelbox = []
-        clozed_text = ''
+        # schuettelbox = []
+        # clozed_text = ''
 
-        for line in file:
-            text = nlp(line)
+        
+        text = nlp(file.read())
 
-            if args.poslist:
-                postags = clozy.get_postags(text)
+        if args.poslist:
+            postags = clozy.get_postags(text)
+            for postag, words in postags.items():
+                for word in words:
+                    print(word, end=', ')
+                print(': ', end='')
+                print(postag)
+                
 
-            elif args.nth:
-                tup = clozy.nth_word_remover(text, schuettelbox, args.nth)
-                clozed_text += tup[0]
-                schuettelbox = tup[1]
-
-            elif args.adj:
-                tup = clozy.adjective_suffix_remover(text, schuettelbox)
-                clozed_text += tup[0]
-                schuettelbox = tup[1]
+        if args.nth:
+            clozed_text, schuettelbox = clozy.nth_word_remover(text, args.nth)
             
-            elif args.pos:
-                
-                tup = clozy.pos_remover(text, schuettelbox, args.pos, args.pospercent/100)
-                clozed_text += tup[0]
-                schuettelbox = tup[1]
-                
-    
+        if args.adj:
+            clozed_text, schuettelbox = clozy.adjective_suffix_remover(text)
+
+        if args.pos:
+            clozed_text, schuettelbox = clozy.pos_remover(text, args.pos, args.pospercent/100)
+
+            
+
         print(clozed_text)
         print(clozy.print_schuettelbox(schuettelbox))
 
