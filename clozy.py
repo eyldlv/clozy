@@ -32,9 +32,10 @@ file = 'sample_texts/text1.txt'
 n = 10
 
 
-def nth_word_remover(text:List[spacy.tokens.Token], schuettelbox:List[str], n:int=10) -> Tuple[str, List[str]]:
+def nth_word_remover(text:List[spacy.tokens.Token], n:int=10) -> Tuple[str, List[str]]:
     return_string = []
     token_ctr = 0
+    schuettelbox = []
     for token in text:
         token_ctr += 1
         if token_ctr >= n and token.is_alpha:
@@ -46,12 +47,13 @@ def nth_word_remover(text:List[spacy.tokens.Token], schuettelbox:List[str], n:in
     return detokenizer(return_string), schuettelbox
 
 
-def pos_remover(text:List[spacy.tokens.Token], schuettelbox:List[str], tags:List[str]=['NOUN'], percentage:int=1) -> Tuple[str, List[str]]:
+def pos_remover(text:List[spacy.tokens.Token], tags:List[str]=['NOUN'], percentage:int=1) -> Tuple[str, List[str]]:
     """
     Turn a certain pos tag in the text to blanks. Nouns by default. All words of the same pos will be removed unless a diffrent percentage is given.
 
     Return a tuple containing the blanked text and a list of strings with the removed tokens.
     """
+    schuettelbox = []
     return_string = []
     positions = get_positions_of_pos(text, tags)
     random_positions = [positions.pop(randint(0,len(positions)-1)) for _ in range(round(len(positions)*percentage))]
@@ -64,8 +66,9 @@ def pos_remover(text:List[spacy.tokens.Token], schuettelbox:List[str], tags:List
     return detokenizer(return_string), schuettelbox
 
 
-def adjective_suffix_remover(text, schuettelbox):
+def adjective_suffix_remover(text):
     return_string = []
+    schuettelbox = []
     for token in text:
         if token.tag_ == 'ADJD':
             return_string.append(add_blank_to_adjd(token.text, schuettelbox))
@@ -79,15 +82,16 @@ def adjective_suffix_remover(text, schuettelbox):
 
 
 def print_schuettelbox(schuettelbox) -> str:
-    return_str = 'Losung:\n----------------\n'
+    return_str = '\n\nLösung:\n----------------\n'
     return_str += ''.join(f'({position}) {word}\n' for position, word in enumerate(schuettelbox,1))
+    return_str += '------------------------------------------------------------'
     return return_str
 
 
 def get_postags(text):
     postags_dict = {}
     for token in text:
-        if token.pos_ != 'PUNCT':
+        if token.pos_ not in ['PUNCT', 'SPACE']:
             if token.pos_ in postags_dict:
                 if len(postags_dict[token.pos_]) < 3 and token.text not in postags_dict[token.pos_]:
                     postags_dict[token.pos_] += [token.text]
@@ -101,14 +105,13 @@ def main():
 
     tags = ['NOUN']
 
-
     schuettelbox = []
     blank_text = []
 
     with open('sample_texts/text3.txt', 'r') as f:
         for line in f:
             text = nlp(line)
-            a = remove_nth_word(text, schuettelbox, 15)
+            a = nth_word_remover(text, schuettelbox, 15)
             blank_text += [a[0]]
 
 
@@ -124,7 +127,7 @@ def main():
     with open('sample_texts/text3.txt', 'r') as f:
         for line in f:
             text = nlp(line)
-            a = remove_pos_new(text, schuettelbox, ['ADP'], 0.5)
+            a = pos_remover(text, schuettelbox, ['ADP'], 0.5)
             blank_text += [a[0]]
 
 
@@ -139,7 +142,7 @@ def main():
         blank_text = []
         for line in f:
             text = nlp(line)
-            blank, schuettel = remove_adjective_suffixes(text, schuettelbox)
+            blank, schuettel = adjective_suffix_remover(text, schuettelbox)
             # print(schuettel)
             blank_text += [blank]
             # schuettelbox += schuettel
