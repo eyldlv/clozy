@@ -1,8 +1,10 @@
+
 import argparse
-import clozy
-import spacy
+# import spacy
 import sys
 
+import clozy
+from constants import nlp
 
 def get_arguments():
     parser = argparse.ArgumentParser(
@@ -41,7 +43,8 @@ def main():
         print('No action chosen. Please rerun with -h for help.')
         sys.exit()
 
-    nlp = spacy.load('de_core_news_sm')    
+    # nlp = spacy.load('de_core_news_sm')
+    # # nlp = constants.nlp    
     if args.outfile:
         sys.stdout = open(args.outfile, 'w', encoding='utf-8')
 
