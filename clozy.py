@@ -4,12 +4,9 @@ from typing import Tuple, List
 from random import randint
 
 
-
-
-
-def erase_token(token:str, schuettelbox:List[str]) -> str:
+def erase_token(token:str, gap_num:int) -> str:
     """ Return a tuple containing the blank"""
-    return ' (' + str(len(schuettelbox)+1) + ')' + '_' * (len(token)*2 +1) 
+    return ' (' + str(gap_num) + ')' + '_' * (len(token)*2 +1) 
 
 
 def get_positions_of_pos(doc, tags):
@@ -20,16 +17,13 @@ def detokenizer(line: List[str]) -> str:
     return "".join(' ' + token if token.isalnum() else token for token in line)[1:]
 
 
-def remove_adja_suffix(token, schuettelbox):
+def remove_adja_suffix(token, gap_num:int):
     """Remove suffixes from declined adjectives."""
-    return ' (' + str(len(schuettelbox)+1) + ') ' + re.sub(r'(es|er|em|en|e)$', '____', token) 
+    return ' (' + str(gap_num) + ') ' + re.sub(r'(es|er|em|en|e)$', '____', token) 
 
 
-def add_blank_to_adjd(token, schuettelbox):
-    return ' (' + str(len(schuettelbox)+1) + ') ' + token + '____'
-
-file = 'sample_texts/text1.txt'
-n = 10
+def add_blank_to_adjd(token, gap_num:int):
+    return ' (' + str(gap_num) + ') ' + token + '____'
 
 
 def nth_word_remover(text:List[spacy.tokens.Token], n:int=10) -> Tuple[str, List[str]]:
@@ -40,7 +34,7 @@ def nth_word_remover(text:List[spacy.tokens.Token], n:int=10) -> Tuple[str, List
         token_ctr += 1
         if token_ctr >= n and token.is_alpha:
             token_ctr = 0
-            return_string.append(erase_token(token.text, schuettelbox))
+            return_string.append(erase_token(token.text, len(schuettelbox)+1))
             schuettelbox.append(token.text)
         else:
             return_string.append(token.text)
@@ -59,7 +53,7 @@ def pos_remover(text:List[spacy.tokens.Token], tags:List[str]=['NOUN'], percenta
     random_positions = [positions.pop(randint(0,len(positions)-1)) for _ in range(round(len(positions)*percentage))]
     for position, token in enumerate(text):
         if position in random_positions:
-            return_string.append(erase_token(token.text, schuettelbox))
+            return_string.append(erase_token(token.text, len(schuettelbox)+1))
             schuettelbox.append(token.text)
         else:
             return_string.append(token.text)
@@ -71,10 +65,10 @@ def adjective_suffix_remover(text):
     schuettelbox = []
     for token in text:
         if token.tag_ == 'ADJD':
-            return_string.append(add_blank_to_adjd(token.text, schuettelbox))
+            return_string.append(add_blank_to_adjd(token.text, len(schuettelbox)+1))
             schuettelbox.append(token.text)
         elif token.tag_ == 'ADJA':
-            return_string.append(remove_adja_suffix(token.text, schuettelbox))
+            return_string.append(remove_adja_suffix(token.text, len(schuettelbox)+1))
             schuettelbox.append(token.text)
         else:
             return_string.append(token.text)
@@ -82,7 +76,7 @@ def adjective_suffix_remover(text):
 
 
 def print_schuettelbox(schuettelbox) -> str:
-    return_str = '\n\nLösung:\n----------------\n'
+    return_str = '\nLösung:\n----------------\n'
     return_str += ''.join(f'({position}) {word}\n' for position, word in enumerate(schuettelbox,1))
     return_str += '------------------------------------------------------------'
     return return_str
