@@ -1,8 +1,7 @@
-import spacy
 import re
 from typing import Tuple, List
 from random import randint
-
+from spacy.tokens import Token
 
 def erase_token(token:str, gap_num:int) -> str:
     """ Return blank based on token 
@@ -14,7 +13,7 @@ def erase_token(token:str, gap_num:int) -> str:
 
 
 def get_positions_of_pos(
-        doc:List[spacy.tokens.Token], tags:List[str]) -> List[int]:
+        doc:List[Token], tags:List[str]) -> List[int]:
     """ Get the positions of given postags in the text. 
     Required to remove only part of them.
     """
@@ -41,7 +40,7 @@ def add_blank_to_adjd(token:str, gap_num:int) -> str:
 
 
 def nth_word_remover(
-        doc:List[spacy.tokens.Token], n:int=10) -> Tuple[str, List[str]]:
+        doc:List[Token], n:int=10) -> Tuple[str, List[str]]:
     return_string = []
     token_ctr = 0
     schuettelbox = []
@@ -59,7 +58,7 @@ def nth_word_remover(
 
 
 def pos_remover(
-        doc:List[spacy.tokens.Token], tags:List[str]=['NOUN'],
+        doc:List[Token], tags:List[str], 
         percentage:int=1) -> Tuple[str, List[str]]:
     """
     Turn a certain postag in the text to blanks. Nouns by default. 
@@ -86,7 +85,7 @@ def pos_remover(
 
 
 def adjective_suffix_remover(
-        doc:List[spacy.tokens.Token]) -> Tuple[str, List[str]]:
+        doc:List[Token]) -> Tuple[str, List[str]]:
     """ Remove adjective suffixes from the text. Will also add a blank suffix 
     to undeclined predicate adjectives.
     
@@ -119,7 +118,7 @@ def print_schuettelbox(schuettelbox:List[str]) -> str:
     return return_str
 
 
-def get_postags(doc:List[spacy.tokens.Token]):
+def get_postags(doc:List[Token]):
     postags_dict = {}
     for token in doc:
         if token.pos_ not in ['PUNCT', 'SPACE']:
@@ -132,13 +131,12 @@ def get_postags(doc:List[spacy.tokens.Token]):
     return postags_dict
 
 def main():
+    input('Welcome to the clozy demo. Press any key to continue.')
     nlp = spacy.load('de_core_news_sm')
-
-    tags = ['NOUN']
 
     schuettelbox = []
     blank_text = []
-
+    input('Clozy can create German fill-in-the-blank texts using a given text file.')
     with open('sample_texts/text3.txt', 'r') as f:
         for line in f:
             text = nlp(line)
