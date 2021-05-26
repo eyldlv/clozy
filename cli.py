@@ -3,12 +3,15 @@ import clozy
 import spacy
 import sys
 
+
 def get_arguments():
-    parser = argparse.ArgumentParser("CLI for clozy, script for creating cloze texts.")
+    parser = argparse.ArgumentParser(
+            "CLI for clozy, script for creating cloze texts.")
     parser.add_argument("file", type=argparse.FileType('r', encoding='utf-8'), 
                         nargs='+', 
                         help='Text file(s) to be used for creating the cloze.')
-    parser.add_argument('--outfile', nargs='?', const='output.txt', action='store', 
+    parser.add_argument('--outfile', nargs='?', const='output.txt', 
+                        action='store', 
                         help='Store output to file. Filename optional. \
                               Default: output.txt')
     parser.add_argument('--nth', '-n', type=int, nargs='?', action='store', 
@@ -25,7 +28,8 @@ def get_arguments():
                         e.g. --pos ADJ --pospercent 50 will randomly \
                         remove 50 percent of all adjectives.')
     parser.add_argument('--poslist', action='store_true', 
-                        help='Print available parts-of-speech for the supplied file(s).')
+                        help='Print available parts-of-speech for the supplied\
+                             file(s).')
     
     args = parser.parse_args()
     return args
@@ -62,7 +66,8 @@ def main():
             print(clozy.print_schuettelbox(schuettelbox))
 
         if args.pos:
-            clozed_text, schuettelbox = clozy.pos_remover(text, args.pos, args.pospercent/100)
+            clozed_text, schuettelbox = clozy.pos_remover(text, args.pos, 
+                args.pospercent/100)
             print(clozed_text)
             print(clozy.print_schuettelbox(schuettelbox))
 

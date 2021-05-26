@@ -4,7 +4,6 @@ from typing import Tuple, List
 from random import randint
 
 
-
 def erase_token(token:str, gap_num:int) -> str:
     """ Return blank based on token 
     
@@ -14,27 +13,35 @@ def erase_token(token:str, gap_num:int) -> str:
     return ' (' + str(gap_num) + ')' + '_' * (len(token)*2 +1) 
 
 
-def get_positions_of_pos(doc:List[spacy.tokens.Token], tags:List[str]) -> List[int]:
-    """ Get the positions of given postags in the text. Required to remove only part of them."""
+def get_positions_of_pos(
+        doc:List[spacy.tokens.Token], tags:List[str]) -> List[int]:
+    """ Get the positions of given postags in the text. 
+    Required to remove only part of them.
+    """
     return [i for i in range(len(doc)) if doc[i].pos_ in tags]
 
 
 def detokenizer(line: List[str]) -> str:
     """ Concetante list of tokens to one string """
-    return "".join(' ' + token if token.isalnum() else token for token in line)[1:]
+    return "".join(' ' + token if token.isalnum() else token
+        for token in line)[1:]
 
 
 def remove_adja_suffix(token:str, gap_num:int) -> str:
-    """Remove suffixes from declined adjectives and return as enumerated blank """
-    return ' (' + str(gap_num) + ') ' + re.sub(r'(es|er|em|en|e)$', '____', token) 
+    """Remove suffixes from declined adjectives and return as enumerated blank 
+    """
+    return ' (' + str(gap_num) + ') ' + \
+        re.sub(r'(es|er|em|en|e)$', '____', token) 
 
 
 def add_blank_to_adjd(token:str, gap_num:int) -> str:
-    """Remove suffixes from predicate adjectives and return as enumerated blank """
+    """Remove suffixes from predicate adjectives and return as enumerated blank
+    """
     return ' (' + str(gap_num) + ') ' + token + '____'
 
 
-def nth_word_remover(doc:List[spacy.tokens.Token], n:int=10) -> Tuple[str, List[str]]:
+def nth_word_remover(
+        doc:List[spacy.tokens.Token], n:int=10) -> Tuple[str, List[str]]:
     return_string = []
     token_ctr = 0
     schuettelbox = []
@@ -44,43 +51,58 @@ def nth_word_remover(doc:List[spacy.tokens.Token], n:int=10) -> Tuple[str, List[
             token_ctr = 0
             return_string.append(erase_token(token.text, len(schuettelbox)+1))
             schuettelbox.append(token.text)
+
         else:
             return_string.append(token.text)
+
     return detokenizer(return_string), schuettelbox
 
 
-def pos_remover(doc:List[spacy.tokens.Token], tags:List[str]=['NOUN'], percentage:int=1) -> Tuple[str, List[str]]:
+def pos_remover(
+        doc:List[spacy.tokens.Token], tags:List[str]=['NOUN'],
+        percentage:int=1) -> Tuple[str, List[str]]:
     """
-    Turn a certain postag in the text to blanks. Nouns by default. All words of the same pos will be removed unless a diffrent percentage is given.
+    Turn a certain postag in the text to blanks. Nouns by default. 
+    All words of the same pos will be removed unless a diffrent percentage 
+    is given.
 
-    Return a tuple containing the blanked text and a list of strings with the removed tokens.
+    Return a tuple containing the blanked text and a list of strings with the
+    removed tokens.
     """
     schuettelbox = []
     return_string = []
     positions = get_positions_of_pos(doc, tags)
-    random_positions = [positions.pop(randint(0,len(positions)-1)) for _ in range(round(len(positions)*percentage))]
+    random_positions = [positions.pop(randint(0,len(positions)-1)) 
+        for _ in range(round(len(positions)*percentage))]
     for position, token in enumerate(doc):
         if position in random_positions:
             return_string.append(erase_token(token.text, len(schuettelbox)+1))
+            
             schuettelbox.append(token.text)
         else:
             return_string.append(token.text)
+
     return detokenizer(return_string), schuettelbox
 
 
-def adjective_suffix_remover(doc:List[spacy.tokens.Token]) -> Tuple[str, List[str]]:
-    """ Remove adjective suffixes from the text. Will also add a blank suffix to undeclined predicate adjectives.
+def adjective_suffix_remover(
+        doc:List[spacy.tokens.Token]) -> Tuple[str, List[str]]:
+    """ Remove adjective suffixes from the text. Will also add a blank suffix 
+    to undeclined predicate adjectives.
     
-    Returns a tuple containing the cloze text and a list of strings with the removed tokens.
+    Returns a tuple containing the cloze text and a list of strings with the
+    removed tokens.
     """
     return_string = []
     schuettelbox = []
     for token in doc:
         if token.tag_ == 'ADJD':
-            return_string.append(add_blank_to_adjd(token.text, len(schuettelbox)+1))
+            return_string.append(add_blank_to_adjd(token.text, 
+                len(schuettelbox)+1))
             schuettelbox.append(token.text)
         elif token.tag_ == 'ADJA':
-            return_string.append(remove_adja_suffix(token.text, len(schuettelbox)+1))
+            return_string.append(remove_adja_suffix(token.text, 
+                len(schuettelbox)+1))
             schuettelbox.append(token.text)
         else:
             return_string.append(token.text)
@@ -91,21 +113,22 @@ def print_schuettelbox(schuettelbox:List[str]) -> str:
     """ Convert the list of removed tokens to a string for printing.
     """
     return_str = '\nLösung:\n----------------\n'
-    return_str += ''.join(f'({position}) {word}\n' for position, word in enumerate(schuettelbox,1))
+    return_str += ''.join(f'({position}) {word}\n' for position, 
+        word in enumerate(schuettelbox,1))
     return_str += '------------------------------------------------------------'
     return return_str
 
 
-def get_postags(text):
+def get_postags(doc:List[spacy.tokens.Token]):
     postags_dict = {}
-    for token in text:
+    for token in doc:
         if token.pos_ not in ['PUNCT', 'SPACE']:
             if token.pos_ in postags_dict:
-                if len(postags_dict[token.pos_]) < 3 and token.text not in postags_dict[token.pos_]:
+                if (len(postags_dict[token.pos_]) < 3 
+                    and token.text not in postags_dict[token.pos_]):
                     postags_dict[token.pos_] += [token.text]
             elif token.pos_ not in postags_dict:
                 postags_dict[token.pos_] = [token.text] 
-
     return postags_dict
 
 def main():
