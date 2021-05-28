@@ -15,9 +15,8 @@ class ClozyTest(TestCase):
                           'CCONJ' : ['aber']}, result)
 
     def test_erase_token(self):
-        token = 'Baum'
-        result = clozy.erase_token(token, 1)
-        self.assertEqual( (' (1)_________'), result, "erase_token doesn't work properly")
+        result = clozy.erase_token(1)
+        self.assertEqual( (' (1)__________'), result, "erase_token doesn't work properly")
 
 
     def test_remove_adja_suffix(self):
@@ -68,3 +67,18 @@ class ClozyTest(TestCase):
         result = clozy.pos_remover(text, ['NOUN'], 0.5)[0]
         possible_results = ['Die (1)___________ sitzt auf dem Tisch.', 'Die Katze sitzt auf dem (1)___________.']
         self.assertTrue(result in possible_results)
+
+
+    def test_print_schuettelbox(self):
+        # testing a random function
+        schuettelbox = ['Apfel', 'Baum', 'ist', 'Zucker', 'Tag']
+        result = clozy.print_schuettelbox(schuettelbox)
+        self.assertEqual(len('Apfel\tBaum\tist\tZucker\tTag\n'), len(result),
+        'The length of the schuettelbox-string is wrong.')
+    
+    def test_print_solution(self):
+        schuettelbox = ['Apfel', 'Baum', 'ist']
+        result = clozy.print_solution(schuettelbox)
+        self.assertEqual('\nLösung:\n----------------\n\
+(1) Apfel\n(2) Baum\n(3) ist\n\-------------------------------\
+-----------------------------', result)

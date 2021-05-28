@@ -9,7 +9,8 @@ schuettelbox = []
 blank_text = []
 print('Clozy can create German fill-in-the-blank texts using a given text file.')
 print('Here are some examples.')
-print('You can have all words belonging to a certain word class, such as nouns or adjectives, removed.')
+print('You can have all words belonging to a certain word class,\
+     such as nouns or adjectives, removed.')
 print('Here\'s an exmample for removing all the nouns (postag "NOUN").')
 input('Press any key.')
 

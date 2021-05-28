@@ -3,13 +3,15 @@ from typing import Tuple, List
 from random import randint
 from spacy.tokens import Token
 
-def erase_token(token:str, gap_num:int) -> str:
+
+def erase_token(gap_num:int, gap_length=10) -> str:
     """ Return blank based on token 
     
     args: original token, gap number in the cloze
     for args token="Baum", gap_num=1  returns: "(1)________"
     """
-    return ' (' + str(gap_num) + ')' + '_' * (len(token)*2 +1) 
+    # return ' (' + str(gap_num) + ')' + '_' * (len(token)*2 +1) 
+    return ' (' + str(gap_num) + ')' + '_' * (gap_length) 
 
 
 def get_positions_of_pos(
@@ -48,7 +50,7 @@ def nth_word_remover(
         token_ctr += 1
         if token_ctr >= n and token.is_alpha:
             token_ctr = 0
-            return_string.append(erase_token(token.text, len(schuettelbox)+1))
+            return_string.append(erase_token(len(schuettelbox)+1))
             schuettelbox.append(token.text)
 
         else:
@@ -75,7 +77,7 @@ def pos_remover(
         for _ in range(round(len(positions)*percentage))]
     for position, token in enumerate(doc):
         if position in random_positions:
-            return_string.append(erase_token(token.text, len(schuettelbox)+1))
+            return_string.append(erase_token(len(schuettelbox)+1))
             
             schuettelbox.append(token.text)
         else:
@@ -109,12 +111,28 @@ def adjective_suffix_remover(
 
 
 def print_schuettelbox(schuettelbox:List[str]) -> str:
+    return_string = '-------------------------------------------------------\n'
+    schuettelbox = schuettelbox[:]
+    while schuettelbox:
+        if len(schuettelbox) > 5:
+            return_string += '\t'.join(schuettelbox.pop(
+                randint(0,len(schuettelbox)-1)) for _ in range(5)) + '\n'
+        else:
+            return_string += '\t'.join(schuettelbox.pop(
+                randint(0,len(schuettelbox)-1)) for _ in range(
+                len(schuettelbox))) + '\n'
+    return_string += '-------------------------------------------------------\n'
+    return return_string
+
+
+def print_solution(schuettelbox:List[str]) -> str:
     """ Convert the list of removed tokens to a string for printing.
     """
     return_str = '\nLösung:\n----------------\n'
     return_str += ''.join(f'({position}) {word}\n' for position, 
         word in enumerate(schuettelbox,1))
     return_str += '------------------------------------------------------------'
+    
     return return_str
 
 

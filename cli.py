@@ -1,4 +1,3 @@
-
 import argparse
 # import spacy
 import sys
@@ -62,17 +61,19 @@ def main():
             clozed_text, schuettelbox = clozy.nth_word_remover(text, args.nth)
             print(clozed_text)
             print(clozy.print_schuettelbox(schuettelbox))
+            print(clozy.print_solution(schuettelbox))
             
         if args.adj:
             clozed_text, schuettelbox = clozy.adjective_suffix_remover(text)
             print(clozed_text)
-            print(clozy.print_schuettelbox(schuettelbox))
+            print(clozy.print_solution(schuettelbox))
 
         if args.pos:
             clozed_text, schuettelbox = clozy.pos_remover(text, args.pos, 
                 args.pospercent/100)
             print(clozed_text)
             print(clozy.print_schuettelbox(schuettelbox))
+            print(clozy.print_solution(schuettelbox))
 
 if __name__ == '__main__':
     main()
