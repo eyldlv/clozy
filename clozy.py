@@ -1,6 +1,13 @@
+# clozy v. 0.0.1
+# main module
+
+# Author: Eyal Dolev
+# Matricuation number: 20-713-897
+# Date: 30.05.2021
+
 import re
-from typing import Tuple, List
 from random import randint
+from typing import Tuple, List, Dict
 from spacy.tokens import Token
 
 
@@ -10,7 +17,6 @@ def erase_token(gap_num:int, gap_length=10) -> str:
     args: original token, gap number in the cloze
     for args token="Baum", gap_num=1  returns: "(1)________"
     """
-    # return ' (' + str(gap_num) + ')' + '_' * (len(token)*2 +1) 
     return ' (' + str(gap_num) + ')' + '_' * (gap_length) 
 
 
@@ -43,13 +49,20 @@ def add_blank_to_adjd(token:str, gap_num:int) -> str:
 
 def nth_word_remover(
         doc:List[Token], n:int=10) -> Tuple[str, List[str]]:
-    return_string = []
+    """ Remove every nth word in the text. Default is every 10th word. In case 
+    the nth word is a punctuation or a number (i.e. not is_alpha), the word will
+    skipped and the next valid word will be removed.
+
+    Return a tuple containing the blanked text and a list of strings with the
+    removed tokens.
+    """
+    return_string = [] 
+    schuettelbox = []    
     token_ctr = 0
-    schuettelbox = []
     for token in doc:
         token_ctr += 1
-        if token_ctr >= n and token.is_alpha:
-            token_ctr = 0
+        if token_ctr >= n and token.is_alpha: # make sure no punctuation
+            token_ctr = 0                     # or numbers turn to blanks 
             return_string.append(erase_token(len(schuettelbox)+1))
             schuettelbox.append(token.text)
 
@@ -72,7 +85,7 @@ def pos_remover(
     """
     schuettelbox = []
     return_string = []
-    positions = get_positions_of_pos(doc, tags)
+    positions = get_positions_of_pos(doc, tags) 
     random_positions = [positions.pop(randint(0,len(positions)-1)) 
         for _ in range(round(len(positions)*percentage))]
     for position, token in enumerate(doc):
@@ -111,6 +124,9 @@ def adjective_suffix_remover(
 
 
 def print_schuettelbox(schuettelbox:List[str]) -> str:
+    """ Return a pretty string with the words removed for crating in blanks, but
+    in randomized order.
+    """
     return_string = '-------------------------------------------------------\n'
     schuettelbox = schuettelbox[:]
     while schuettelbox:
@@ -126,7 +142,7 @@ def print_schuettelbox(schuettelbox:List[str]) -> str:
 
 
 def print_solution(schuettelbox:List[str]) -> str:
-    """ Convert the list of removed tokens to a string for printing.
+    """ Convert the list of removed tokens to a string for pretty printing.
     """
     return_str = '\nLösung:\n----------------\n'
     return_str += ''.join(f'({position}) {word}\n' for position, 
@@ -136,70 +152,16 @@ def print_solution(schuettelbox:List[str]) -> str:
     return return_str
 
 
-def get_postags(doc:List[Token]):
+def get_postags(doc:List[Token]) -> Dict[str, List[str]]:
+    """ Inspect a text and return a dictionary with up to 5 words per postag.
+    """
     postags_dict = {}
     for token in doc:
         if token.pos_ not in ['PUNCT', 'SPACE']:
             if token.pos_ in postags_dict:
-                if (len(postags_dict[token.pos_]) < 3 
+                if (len(postags_dict[token.pos_]) < 5 
                     and token.text not in postags_dict[token.pos_]):
                     postags_dict[token.pos_] += [token.text]
             elif token.pos_ not in postags_dict:
                 postags_dict[token.pos_] = [token.text] 
     return postags_dict
-
-def main():
-    input('Welcome to the clozy demo. Press any key to continue.')
-    nlp = spacy.load('de_core_news_sm')
-
-    schuettelbox = []
-    blank_text = []
-    input('Clozy can create German fill-in-the-blank texts using a given text file.')
-    with open('sample_texts/text3.txt', 'r') as f:
-        for line in f:
-            text = nlp(line)
-            a = nth_word_remover(text, schuettelbox, 15)
-            blank_text += [a[0]]
-
-
-    for paragraph in blank_text:
-        print(paragraph)
-    print_schuettelbox(schuettelbox)
-
-
-
-    schuettelbox = []
-    blank_text = []
-
-    with open('sample_texts/text3.txt', 'r') as f:
-        for line in f:
-            text = nlp(line)
-            a = pos_remover(text, schuettelbox, ['ADP'], 0.5)
-            blank_text += [a[0]]
-
-
-    for paragraph in blank_text:
-        print(paragraph, end='')
-    print_schuettelbox(schuettelbox)
-
-
-
-    with open ('sample_texts/junk.txt', 'r') as f:
-        schuettelbox = []
-        blank_text = []
-        for line in f:
-            text = nlp(line)
-            blank, schuettel = adjective_suffix_remover(text, schuettelbox)
-            # print(schuettel)
-            blank_text += [blank]
-            # schuettelbox += schuettel
-
-    for paragraph in blank_text:
-        print(paragraph, end='')
-    print_schuettelbox(schuettelbox)
-    # check(text)
-
-    # NOUN, VERB, AUX, ADJ, ADV (noch, jedoch, schon, selten), ADP (präpositionen), DET, SCONJ (dass), CCONJ (und, aber)
-
-if __name__ == '__main__':
-    main()
