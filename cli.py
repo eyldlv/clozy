@@ -1,5 +1,11 @@
+# clozy v. 0.0.1
+# CLI module
+
+# Author: Eyal Dolev
+# Matricuation number: 20-713-897
+# Date: 30.05.2021
+
 import argparse
-# import spacy
 import sys
 
 import clozy
