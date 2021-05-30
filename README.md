@@ -1,7 +1,8 @@
-# clozy - a script for creating fill-in-the-blank (aka cloze) exercises 
+# clozy v.0.0.1
+a script for creating fill-in-the-blank (aka cloze) exercises 
 
 ## Introduction
-Inspired by our seminar, I got the idea to create a tool that would help me, as well as perhaps other German teachers, to create cloze exercises for students in my course. The tool uses the SpaCy library for part-of-speech recognition, required for two of the three main functions of the tool.
+Inspired by the seminar "Intermediate Methods and Programming in Digital Linguistics", I got the idea to create a tool that would help me, as well as perhaps other German teachers, to create cloze exercises for students in my course. The tool uses the SpaCy library for part-of-speech recognition, required for two of the three main functions of the tool.
 
 The output contains the cloze exercise with enumerated blanks, the removed words in randomized order (_Schüttelbox_) and the solution.
 
@@ -20,14 +21,14 @@ python -m spacy download de_core_news_sm
 ```
 
 ## Usage
-Using a command line interface, the user supplies a text-file with the text from which the exercises should be created, as well as one or more flags for specifying the type of exercise that should be created. The three types are:
+Using a command line interface, the user supplies a text-file containing the text to be used for creating the exercise, as well as one or more flags for specifying the type of exercise that should be created. The three exercise types are:
 
 * Remove every n-th word, for instance every 10th word in the text.
 * Remove all adjective suffixes.
 * Remove all words belonging to a certain part-of-speech. 
 
 ### Examples
-An example for a program call might look like this:
+A program call might look like this:
 ```bash
 python cli.py my_text.txt --nth 8 
 ```
@@ -53,6 +54,8 @@ For a list of postags contained in a text the flag `--poslist` can be used.
 ```bash
 python cli.py my_text.txt --poslist
 ```
+(Will list up to a maximum of five words per postag)
+
 
 ##### Output example:
 ```bash
@@ -71,7 +74,7 @@ zwei, vier, : NUM
 nicht, zu, : PART
 ```
 
-Sometimes a text will contain a lot of words of the same part-of-speech, too many to be removed in order to create a cloze that makes sense. In that case, the amount of words that will be removed can be limited with the flag `--postpercent` followed by the percentage of words that should be removed, e.g. `--pospercent 70`.
+Sometimes a text will contain a lot of words of the same part-of-speech, too many to be removed in order to create a cloze that makes sense. In that case, the amount of words that will be removed can be limited with the flag `--pospercent` followed by the percentage of words that should be removed, e.g. `--pospercent 70`.
 
 
 #### Adjective suffix blanks
