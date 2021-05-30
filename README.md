@@ -1,5 +1,6 @@
-# clozy v.0.0.1
-a script for creating fill-in-the-blank (aka cloze) exercises 
+# clozy v. 0.0.1
+A script for creating fill-in-the-blank (aka cloze) exercises
+Created by Eyal Dolev
 
 ## Introduction
 Inspired by the seminar "Intermediate Methods and Programming in Digital Linguistics", I got the idea to create a tool that would help me, as well as perhaps other German teachers, to create cloze exercises for students in my course. The tool uses the SpaCy library for part-of-speech recognition, required for two of the three main functions of the tool.
@@ -89,7 +90,7 @@ With this function, no _Schüttelbox_ will be produced.
 Four sample texts can be found in the folder `sample_texts`. These texts can be used to test the program. See [References](#references) for origin.
 
 ## Demo
-Run `cli.py` with the flag `--demo` or simply run `demo.py` for a quick demo.
+Run `demo.py` for a quick demo of clozy.
 
 ## Future features
 Some future features that might be included are:
@@ -102,5 +103,3 @@ Some future features that might be included are:
 * text1.txt and text2.txt taken from: Dreyer, Hilke; Schmidt, Eberhard: Lehr- und Übungsbuch der deutschen Grammatik, die Gelbe aktuell, 1. Auflage, Hueber Verlag, Ismaning 2009, S. 300f
 * text3.txt - Danger Dan: Das ist alles von der Kunstfreiheit gedeckt, 2021
 * text4.txt - https://lingua.com/de/deutsch/lesen/flughafen/
-
-2009. Lehr- und Bahbuch. 1st ed. Ismaning: Hueber Verlag, pp.300-301.
