@@ -11,6 +11,7 @@ import sys
 import clozy
 from constants import nlp
 
+
 def get_arguments():
     parser = argparse.ArgumentParser(
             "CLI for clozy, script for creating cloze texts.")
@@ -32,8 +33,8 @@ def get_arguments():
                               for the supplied files.')
     parser.add_argument('--pospercent', type=int, default=100,
                         help='When defined, limit pos-tag removal to x percent.\
-                        e.g. --pos ADJ --pospercent 50 will randomly \
-                        remove 50 percent of all adjectives.')
+                        e.g. --pos NOUN --pospercent 50 will randomly \
+                        remove 50 percent of all nouns.')
     parser.add_argument('--poslist', action='store_true', 
                         help='Print available parts-of-speech for the supplied\
                              file(s).')
@@ -47,21 +48,21 @@ def main():
     if not any([args.poslist, args.pos, args.adj, args.nth]):
         print('No action chosen. Please rerun with -h for help.')
         sys.exit()
-
-    # nlp = spacy.load('de_core_news_sm')
-    # # nlp = constants.nlp    
+  
     if args.outfile:
         sys.stdout = open(args.outfile, 'w', encoding='utf-8')
 
     for file in args.file:        
         text = nlp(file.read())
         if args.poslist:
+            print(f'List of postags for {file.name}:')
             postags = clozy.get_postags(text)
             for postag, words in postags.items():
                 for word in words:
                     print(word, end=', ')
                 print(': ', end='')
                 print(postag)
+            print('-' * 12)
                 
         if args.nth:
             clozed_text, schuettelbox = clozy.nth_word_remover(text, args.nth)
