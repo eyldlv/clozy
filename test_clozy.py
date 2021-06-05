@@ -45,12 +45,18 @@ class ClozyTest(TestCase):
     def test_nth_word(self):
         text = nlp('Auf einem Baum saß ein alter Hahn.')
         result = clozy.nth_word_remover(text, 4)
-        self.assertEqual(('Auf einem Baum (1)__________ ein alter Hahn.', ['saß']), result)
+        self.assertEqual(('Auf einem Baum (1)__________ ein alter Hahn.', 
+        ['saß']), result)
 
         text = nlp('Ich will. Nach Hause.')
         result = clozy.nth_word_remover(text, 3)
-        self.assertEqual(('Ich will. (1)__________ Hause.', ['Nach']), result, 'If word is a punctuation mark or a number it should be skipped.')
-    
+        self.assertEqual(('Ich will. (1)__________ Hause.', ['Nach']), 
+        result, 'If word is a punctuation mark or a number it should be skipped.')
+
+        text = nlp('Das Geständnis eines Mitarbeiters könnte für die Schweizer Firma Folgen haben. Wie stark das betroffene Land unter solchen Geschäften leidet, zeigt ein neuer Bericht.')
+        result = clozy.nth_word_remover(text)
+        self.assertEqual(('Das Geständnis eines Mitarbeiters könnte für die Schweizer Firma (1)__________ haben. Wie stark das betroffene Land unter solchen Geschäften (2)__________, zeigt ein neuer Bericht.', ['Folgen','leidet']), result, 'When not specified, n should default to 10.')
+
     def test_get_positions_of_pos(self):
         text = nlp('Auf einem Baum saß ein alter Hahn.')
         result = clozy.get_positions_of_pos(text, ['NOUN'])

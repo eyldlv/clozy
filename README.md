@@ -1,14 +1,17 @@
-# clozy v. 0.0.1
+# clozy v0.0.1
 A script for creating fill-in-the-blank (aka cloze) exercises
+
 Created by Eyal Dolev
 
+---
+
 ## Introduction
-Inspired by the seminar "Intermediate Methods and Programming in Digital Linguistics", I got the idea to create a tool that would help me, as well as perhaps other German teachers, to create cloze exercises for students in my course. The tool uses the SpaCy library for part-of-speech recognition, required for two of the three main functions of the tool.
+Inspired by the seminar "Intermediate Methods and Programming in Digital Linguistics", I got the idea to create a tool that would help me, as well as perhaps other German teachers, to create cloze exercises for students in German course. The tool uses the SpaCy library for part-of-speech recognition, required for two of the three main functions of the tool.
 
 The output contains the cloze exercise with enumerated blanks, the removed words in randomized order (_Schüttelbox_) and the solution.
 
 ## Requirements
-The SpaCy small German model is required for using this program.
+SpaCy v3.0, as well as the SpaCy small German model, are required for using this program.
 
 Install SpaCy:
 ```bash
@@ -27,6 +30,8 @@ Using a command line interface, the user supplies a text-file containing the tex
 * Remove every n-th word, for instance every 10th word in the text.
 * Remove all adjective suffixes.
 * Remove all words belonging to a certain part-of-speech. 
+
+There are no special requirements for the files (i.e. one sentence or paragraph per line; hard-wraps are okay). The original line breaks will be retained in the output.
 
 ### Examples
 A program call might look like this:
@@ -85,6 +90,14 @@ Adjective declination in German is highly complex. This is why exercises where s
 python cli.py my_text.txt --adj
 ```
 With this function, no _Schüttelbox_ will be produced.
+
+#### Multiple exercises
+It is possible to state more than one flag:
+```bash
+python cli.py my_text.txt --pos NOUN --adj
+```
+In this case, two exercises will be produced.
+
 
 ## Data
 Four sample texts can be found in the folder `sample_texts`. These texts can be used to test the program. See [References](#references) for origin.

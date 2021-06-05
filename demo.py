@@ -1,4 +1,4 @@
-# clozy v. 0.0.1
+# clozy v0.0.1
 # Demo
 
 # Author: Eyal Dolev

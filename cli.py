@@ -1,4 +1,4 @@
-# clozy v. 0.0.1
+# clozy v0.1
 # CLI module
 
 # Author: Eyal Dolev
