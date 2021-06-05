@@ -1,7 +1,8 @@
-# clozy v0.0.1
+# clozy v0.1
 A script for creating fill-in-the-blank (aka cloze) exercises
 
 Created by Eyal Dolev
+05.06.2021
 
 ---
 
