@@ -46,6 +46,20 @@ python cli.py texts/*.txt --nth 8
 
 This call would produce a cloze with every 8th word being a blank.
 
+#### Output example
+```
+Teile Australiens erleben eine extreme Trockenheit. Infolge (1)__________ Regenmangels droht in mehreren australischen Bundesstaaten eine (2)__________.
+-------------------------------------------------------
+des	Dürrekatastrophe
+-------------------------------------------------------
+
+Lösung:
+----------------
+(1) des
+(2) Dürrekatastrophe
+
+```
+
 #### Print to file
 In order to store the exercises produced in a file instead of printing to the screen (stdout) use the flag `--outfile`. The default filename is `output.txt`, but a custom filename may be specified, e.g. `--outfile outtext.txt`.
 
@@ -84,7 +98,7 @@ Sometimes a text will contain a lot of words of the same part-of-speech, too man
 
 
 #### Adjective suffix blanks
-Adjective declination in German is highly complex. This is why exercises where students are required to fill in the adjective endings are very helpful. Adjective suffix blanks can be created with the `--adj` call.
+Adjective declination in German is highly complex. This is why exercises in which students are required to fill in the adjective endings are very helpful. Adjective suffix blanks can be created with the `--adj` flag.
 
 ```bash
 python cli.py my_text.txt --adj
@@ -108,7 +122,7 @@ Run `demo.py` for a quick demo of clozy.
 ## Future features
 Some future features that might be included are:
 * German UI
-* Simplified postags in German that will enable the user to use tags like `NOMEN`, `ADJ` or 'PRAEP'.
+* Simplified postags in German that will enable the user to use tags like `NOMEN`, `ADJ` or `PRAEP`.
 * Support for other languages, i.e. English, Dutch
 
 ## References
