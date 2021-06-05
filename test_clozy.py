@@ -1,3 +1,10 @@
+# clozy v0.1
+# unit tests
+
+# Author: Eyal Dolev
+# Matricuation number: 20-713-897
+# Date: 30.05.2021
+
 from unittest import TestCase, main
 import clozy
 import spacy
@@ -14,6 +21,15 @@ class ClozyTest(TestCase):
                           'ADJ'  : ['lecker', 'gelb'],
                           'CCONJ' : ['aber']}, result)
 
+        sentence = nlp('Äpfel sind lecker und Äpfel sind rot.')
+        result = clozy.get_postags(sentence)
+        self.assertEqual({'NOUN' : ['Äpfel'],
+                          'AUX' : ['sind'],
+                          'ADJ'  : ['lecker', 'rot'],
+                          'CCONJ' : ['und']}, result,
+                          'no duplicates values allowed.')
+    
+    
     def test_erase_token(self):
         result = clozy.erase_token(1)
         self.assertEqual( (' (1)__________'), result, "erase_token doesn't work properly")
