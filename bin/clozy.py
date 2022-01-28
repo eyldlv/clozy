@@ -74,13 +74,13 @@ def nth_word_remover(
     Args:
         doc: list of spacy tokens 
         n: frequency of words to be removed and turned into blanks
-    
+   
     Returns:
         A tuple containing the blanked text and a list of strings with the
     removed tokens.
     """
-    return_string = [] 
-    schuettelbox = []    
+    return_string = []
+    schuettelbox = []
     token_ctr = 0
     for token in doc:
         if token.is_alpha: # count only true words, no numbers of punctuation
