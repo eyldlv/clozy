@@ -5,8 +5,8 @@
 # Matricuation number: 20-713-897
 # Date: 30.05.2021
 
-import clozy
-from constants import nlp
+from bin import clozy
+from bin.constants import nlp
 
 input('Welcome to the clozy demo. Press any key to continue.')
 

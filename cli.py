@@ -8,8 +8,8 @@
 import argparse
 import sys
 
-import clozy
-from constants import nlp
+from bin import clozy
+from bin.constants import nlp
 
 
 def get_arguments():
